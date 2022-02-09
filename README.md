@@ -16,5 +16,5 @@ Update a Spotify playlist based on the library of your shazams, that can be down
       - e.g.  in 'https://open.spotify.com/playlist/37i9dQZF1DX6YTj07PjLwE' the id is 37i9dQZF1DX6YTj07PjLwE  
   5. The csv file expects the format used by shazam: Index,TagTime,Title,Artist,URL,TrackKey. First line is skipped.
   6. Execute: spotyzam playlist-id csv-file.csv
-      - e.g. C:\Users\user\Document>spotyzam.exe 6R123456JTOr75ntrtymmk shazamlibrary.csv
+      - e.g. C:\Users\user\Document>spotyzam.exe 37i9dQZF1DX6YTj07PjLwE shazamlibrary.csv
 
