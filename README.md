@@ -6,10 +6,10 @@ Update a Spotify playlist based on the library of your shazams, that can be down
    - Use 'http://localhost:8080/callback' as the redirect URI
   2. Set the SPOTIFY_ID environment variable to the client ID you got in step 1.
      - set SPOTIFY_ID=your-spotify-client-id  (from windows cmd)
-     - export SPOTIFY_ID=your-spotify-client-id (linux shell)
+     - export SPOTIFY_ID=your-spotify-client-id (linux/osx shell)
   3. Set the SPOTIFY_SECRET environment variable to the client secret from step 1.
      - set SPOTIFY_SECRET=your-spotify-client-secret  (from windows cmd)
-     - export SPOTIFY_SECRET=your-spotify-client-secret (linux shell)
+     - export SPOTIFY_SECRET=your-spotify-client-secret (linux/osx shell)
   4. In Spotify, Create a playlist where you want your tracks to be added 
       - get the ID of that playlist by using the share button. 
       - The ID is the string that goes after https://open.spotify.com/playlist/ 
