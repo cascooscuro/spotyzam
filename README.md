@@ -1,7 +1,10 @@
 # spotyzam
 Update a Spotify playlist based on the library of your shazams that can be downloaded as a csv file from https://www.shazam.com/myshazam
 
- Instructions:
+# Downloads
+Releases for linux, windows and macOS in the release page https://github.com/cascooscuro/spotyzam/releases
+
+ # Instructions:
   1. Register an application at: https://developer.spotify.com/my-applications/
    - Use 'http://localhost:8080/callback' as the redirect URI
   2. In your cmd/shell, set the SPOTIFY_ID environment variable to the client ID you got in step 1.
