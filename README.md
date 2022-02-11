@@ -1,10 +1,10 @@
 # spotyzam
-Update a Spotify playlist based on the library of your shazams, that can be downloaded as a csv file in https://www.shazam.com/myshazam
+Update a Spotify playlist based on the library of your shazams that can be downloaded as a csv file from https://www.shazam.com/myshazam
 
  Instructions:
   1. Register an application at: https://developer.spotify.com/my-applications/
    - Use 'http://localhost:8080/callback' as the redirect URI
-  2. Set the SPOTIFY_ID environment variable to the client ID you got in step 1.
+  2. In your cmd/shell, set the SPOTIFY_ID environment variable to the client ID you got in step 1.
      - set SPOTIFY_ID=your-spotify-client-id  (from windows cmd)
      - export SPOTIFY_ID=your-spotify-client-id (linux/osx shell)
   3. Set the SPOTIFY_SECRET environment variable to the client secret from step 1.
@@ -18,3 +18,7 @@ Update a Spotify playlist based on the library of your shazams, that can be down
   6. Execute: spotyzam playlist-id csv-file.csv
       - e.g. C:\Users\user\Document>spotyzam.exe 37i9dQZF1DX6YTj07PjLwE shazamlibrary.csv
 
+
+# Spotify Application settings
+
+<img src="https://user-images.githubusercontent.com/5746813/153570984-66cce31b-d7a1-435e-895f-bffc768e3c38.png" width="400" height="400">
