@@ -25,3 +25,11 @@ Releases for linux, windows and macOS in the release page https://github.com/cas
 # Spotify Application settings
 
 <img src="https://user-images.githubusercontent.com/5746813/153570984-66cce31b-d7a1-435e-895f-bffc768e3c38.png" width="400" height="400">
+
+# Building/Compiling
+1. Install golang  https://go.dev/doc/install
+2. Use git to clone the github repo (git clone https://github.com/cascooscuro/spotyzam.git) or just download the code from https://github.com/cascooscuro/spotyzam/archive/refs/heads/main.zip and unzip it
+3. in the directory where you have spotyzam.go do "go mod init spotyzam" and after that "go mod tidy"
+4. Finally, to compile it: "go build spotyzam.go"
+5. You should have now a binary "spotyzam" in your folder. Youn can run it by doing "./spotyzam" or "spotyzam.exe", depending on your OS
+6. follow the instructions  to create the spotify application and playlist and set the environment variable to run it
