@@ -88,22 +88,19 @@ func main() {
         fmt.Println("You are logged in as:", user.ID)
 
 
+            PlaylistId := os.Args[1]
+            Filename := os.Args[2]
 
-
-
-    PlaylistId := os.Args[1]
-    Filename := os.Args[2]
-
-    f, err := os.Open(Filename)
-    if err != nil {
-        panic(err)
-    }
-    defer f.Close()
-    records, err := readSample(f)
-    if err != nil {
-        panic(err)
-    }
-            
+            f, err := os.Open(Filename)
+            if err != nil {
+                panic(err)
+            }
+            defer f.Close()
+            records, err := readSample(f)
+            if err != nil {
+                panic(err)
+            }
+                    
 
 
     results, err := client.GetPlaylist(context.Background(), spotify.ID(PlaylistId))
@@ -266,7 +263,7 @@ func completeAuth(w http.ResponseWriter, r *http.Request) {
         }
 
         // use the token to get an authenticated client
-        client := spotify.New(auth.Client(r.Context(), tok))
+        client := spotify.New(auth.Client(r.Context(), tok),spotify.WithRetry(true))
         fmt.Fprintf(w, "Login Completed!")
         ch <- client
 }
@@ -284,6 +281,7 @@ func readSample(rs io.ReadSeeker) ([][]string, error) {
 
     // Read remaining rows
     r := csv.NewReader(rs)
+    r.LazyQuotes = true
     rows, err := r.ReadAll()
     if err != nil {
         return nil, err
