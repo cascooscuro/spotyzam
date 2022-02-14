@@ -21,6 +21,8 @@ import (
         "bufio"
         "io"
         "github.com/zmb3/spotify/v2"
+        "strings"
+        "regexp"
 )
 
 // redirectURI is the OAuth redirect URI for the application.
@@ -125,7 +127,16 @@ func main() {
             trackid spotify.ID
         }
 
+        type notfoundtrack struct {
+            csvtext string
+            artist string
+            track string
+        }
+
+
+
         var tracks_in_playlist []track
+        var not_found_tracks []notfoundtrack
 
         if results_tracks.Tracks != nil && len(results_tracks.Tracks) >0 {
 
@@ -155,9 +166,39 @@ func main() {
     
         
         for _, item := range records  {
+
+                //item[2]=track
+                //item[3]=artist
                 var doweappend int = 1
-                q:= "track:" + item[2] + " " + "artist:" +  item[3]
-                results, err := client.Search(context.Background(), q, spotify.SearchTypeTrack|spotify.SearchTypeArtist)
+                
+                //remove chars from artist
+                //remove everythingafter  Feat.
+                reg1 := regexp.MustCompile(`Feat\..*$`)
+                res1 := reg1.ReplaceAllString(item[3], "")
+                temp2 := strings.Replace(res1, "&", " ", -1)
+                temp3 := strings.Replace(temp2, ",", " ", -1)
+                fin_artist := temp3
+
+                //remove everything inside () or []
+                reg2 := regexp.MustCompile(`[\(\[].*?[\)\]]`)
+                res2 := reg2.ReplaceAllString(item[2], "")
+                //remove bad words thant contains ***
+                reg3 := regexp.MustCompile(`[^ ]*\*\*\*[^ ]*`)
+                res3 := reg3.ReplaceAllString(res2, "")
+                //remove bad words thant contains **
+                reg4 := regexp.MustCompile(`[^ ]*\*\*[^ ]*`)
+                res4 := reg4.ReplaceAllString(res3, "")
+                fin_track := res4
+                                
+                //q:= "track:" + fin_track + " " + "artist:" +  fin_artist
+                //searching without field filters gives better results
+                q := fin_track + " " + fin_artist
+                                
+                fmt.Println("CSV:",item)
+                fmt.Println("QUERY:",q)
+                
+                results, err := client.Search(context.Background(), q, spotify.SearchTypeTrack)
+
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -170,27 +211,43 @@ func main() {
                                 if ((tracks_in_playlist[i].albumname == results.Tracks.Tracks[0].Album.Name) && (tracks_in_playlist[i].trackname == results.Tracks.Tracks[0].Name )) {
                                 // track already in playlist!
                                 doweappend = 0
+                                fmt.Println("ALREADY in playlist")
+                                fmt.Println("------------")
                                 break
                                 } 
                         }
                                         
                         if doweappend == 1 {                    
-                                fmt.Println("NEW TRACK ::", "Album:",results.Tracks.Tracks[0].Album.Name, "----", "Track:",results.Tracks.Tracks[0].Name,"----", "ID:", results.Tracks.Tracks[0].ID )
+                                fmt.Println("FOUND NEW TRACK ::","Artist:",results.Tracks.Tracks[0].Artists[0].Name, "----",  "Album:",results.Tracks.Tracks[0].Album.Name, "----", "Track:",results.Tracks.Tracks[0].Name,"----", "ID:", results.Tracks.Tracks[0].ID )
                                 tracklist = append(tracklist,  spotify.ID(results.Tracks.Tracks[0].ID)  )
+                                fmt.Println("------------")
                         }
+                }
+                //track not found
+                if results.Tracks != nil && len(results.Tracks.Tracks) == 0 {
+                        not_found_tracks = append(not_found_tracks,notfoundtrack{strings.Join(item, ","),fin_artist, fin_track} )
+                        fmt.Println("NOT FOUND")
+                        fmt.Println("------------")
                 }
         }
 
         if len(tracklist) == 0 {
+                fmt.Println("\n")
                 fmt.Println("----Nothing to do. There aren't new tracks to add to the playlist." )
+                fmt.Println("\n")
+                fmt.Println("There are: ", len(not_found_tracks), " tracks that were not found:")
+                for _, item := range not_found_tracks  {
+                        fmt.Println("NOT FOUND CSV TEXT ::", item.csvtext )
+                        fmt.Println("NOT FOUND ::", "Artist:",item.artist, "----", "Track:",item.track )
+        }
                 os.Exit(0)
 
         } else {
                 fmt.Println("")
                 fmt.Println("There are: ", len(tracklist), " tracks to update in the playlist")
                 fmt.Println("----Let's add tracks via API ----" )
-       }
-        
+        }
+
         // Split the slice into batches of 100 items.
         batch := 100
 
@@ -219,6 +276,12 @@ func main() {
         fmt.Println("\n")
         fmt.Println("Playlist TOTAL Tracks after the update:", results_playlist_update.Tracks.Total)
         fmt.Println("\n")
+
+        fmt.Println("There are: ", len(not_found_tracks), " tracks that were not found:")
+        for _, item := range not_found_tracks  {
+                fmt.Println("NOT FOUND CSV TEXT ::", item.csvtext )
+                fmt.Println("NOT FOUND ::", "Artist:",item.artist, "----", "Track:",item.track )
+        }
 }
 
 func completeAuth(w http.ResponseWriter, r *http.Request) {
